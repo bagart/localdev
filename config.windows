@@ -1,3 +1,4 @@
+
 #export REMOTE_DOMAINS=
 
 # Section to authenticate against registry in gitlab
@@ -9,6 +10,8 @@ export GITLAB_EMAIL="@gmail.com"
 #export OPENVPN_CONFIG_FILE=secrets/config.ovpn
 
 ## More information can be found at https://github.com/kubernetes/minikube/blob/master/docs/drivers.md
+
+#hyperv: https://docs.microsoft.com/en-us/virtualization/hyper-v-on-windows/user-guide/nested-virtualization
 export MINIKUBE_VM_DRIVER=hyperv
 # export MINIKUBE_VM_DRIVER=virtualbox
 # export MINIKUBE_VM_DRIVER=kvm2
