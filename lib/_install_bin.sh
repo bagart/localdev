@@ -10,7 +10,7 @@ installFile() {
 
   local expected_sum=$(cat ${SUM_FILE})
   if [ "$sum" != "$expected_sum" ]; then
-  echo "!checksum: $sum != $expected_sum"
+    echo "!checksum: $sum != $expected_sum"
     exit 1
   fi
 
