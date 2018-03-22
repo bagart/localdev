@@ -2,8 +2,8 @@
 
 ## Get kubernetes binaries
 source config
-source get_minikube.sh
-source get_kubectl.sh
-source get_helm.sh
+source apps/get_minikube.sh
+source apps/get_kubectl.sh
+source apps/get_helm.sh
 
 source deploy.sh

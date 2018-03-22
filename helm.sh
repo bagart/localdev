@@ -87,11 +87,11 @@ function createSecret() {
   ${KUBECTL} get ns "${LOCALDEV_BRANCH}" || ${KUBECTL} create ns "${LOCALDEV_BRANCH}"
   if ! ${KUBECTL} get secret "${secert_name}" --namespace "${LOCALDEV_BRANCH}" > /dev/null 2>&1; then
     ${KUBECTL} create secret docker-registry "${secert_name}" \
-                                          --docker-server="${LOCALDEV_REGISTRY_SERVER}" \
-                                          --docker-username="${LOCALDEV_REGISTRY_USERNAME=}" \
-                                          --docker-password="${LOCALDEV_REGISTRY_PASSWORD}" \
-                                          --docker-email="${GITLAB_EMAIL}" \
-                                          --namespace "${LOCALDEV_BRANCH}" && \
+          --docker-server="${LOCALDEV_REGISTRY_SERVER}" \
+          --docker-username="${LOCALDEV_REGISTRY_USERNAME=}" \
+          --docker-password="${LOCALDEV_REGISTRY_PASSWORD}" \
+          --docker-email="${GITLAB_EMAIL}" \
+          --namespace "${LOCALDEV_BRANCH}" && \
       return 0
     return 1
   fi

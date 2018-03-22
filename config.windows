@@ -26,4 +26,5 @@ export HELM_INSTALL_DIR=/c/dev/docker/
 
 # Binary Configs
 export KUBECTL_VERSION=v1.9.3
-export MINIKUBE_VERSION=latest
+#export MINIKUBE_VERSION=latest
+export MINIKUBE_VERSION=v0.25.0

@@ -55,7 +55,10 @@ function install_minikube() {
     local local_mount_dir=$HOME/.localdev/services/
     local remote_mount_dir=/home/services/
     echo Installing Kubernetes with minikube vm-driver "${MINIKUBE_VM_DRIVER}"
-    mkdir -p -m 0777 $local_mount_dir
+    mkdir -p $local_mount_dir
+    if [[ "$OS" != "windows" ]]; then
+        chmod 0777 $local_mount_dir
+    fi
     chmod -R 0755 $local_mount_dir
     minikube start --vm-driver "${MINIKUBE_VM_DRIVER}" \
                    --docker-opt "fixed-cidr=${DOCKERD_FIXED_CIDR}" \
