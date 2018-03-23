@@ -6,10 +6,13 @@ source install_kubernetes.sh
 
 echo -=-=-=- starting helm init -=-=-=-
 source get_helm.sh
+echo -=-=-=- sleep 100 -=-=-=-
+sleep 100
+echo -=-=-=- helm init -=-=-=-
 helm init
 
-echo -=-=-=- sleep 70 -=-=-=-
-sleep 70
+echo -=-=-=- sleep 100 -=-=-=-
+sleep 100
 
 echo -=-=-=- starting install_services -=-=-=-
 source install_services.sh
