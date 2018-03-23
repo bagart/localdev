@@ -34,7 +34,7 @@ cp config.windows config
 #### 5. В файле `./services/ext-api` и отредактированть переменные (см. [Определние сервисов для развертывания](#Def_services)).
 
 #### 6. Положить в директорию `secrets` файл настрйоки vpn в облачную среду
-для openvpn-client `secrets/config.ovpn`:
+для openvpn-client `secrets/config.conf`:
 
 #### 7. Установка `minikube`, `kubectl`, `helm`
 ```sh
