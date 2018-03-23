@@ -1,5 +1,14 @@
 # Документация
 
+mem
+```
+ #force minikube remove
+ sudo minikube stop;sudo minikube delete; rm -rf ~/.minikube/ ~/.kube ~/.localdev ~/.helm
+
+ sudo ip r add 10.96.0.10 via $(minikube ip)
+ ```
+ 
+ 
 ### Содержание
 
 + [Быстрый запуск](#Quickstart);

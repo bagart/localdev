@@ -95,6 +95,7 @@ function getKubeIps {
 }
 
 function setRoutes {
+
   getKubeIps
   echo "INFO == Trying to set routes to minikube container and kubernetes dns =="
   case "$OS" in
@@ -109,7 +110,7 @@ function setRoutes {
 }
 
 source lib/_facts.sh
-
+initOS
 ### Install and configure kubernetes ###
 install_minikube
 sleep 15
