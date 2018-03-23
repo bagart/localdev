@@ -5,6 +5,7 @@ echo -=-=-=- starting install_kubernetes.sh -=-=-=-
 source install_kubernetes.sh
 
 echo -=-=-=- starting helm init -=-=-=-
+source get_helm.sh
 helm init
 
 echo -=-=-=- sleep 70 -=-=-=-
