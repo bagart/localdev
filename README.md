@@ -22,9 +22,29 @@ sudo ip r add 10.101.0.0/16 via $(minikube ip)
 sudo ip r add 10.96.0.10 via $(minikube ip)
 sudo ip r add 172.21.0.0/24 via $(minikube ip)
  ```
+### config for proxy-nginx
+```
+server {
+        listen 80 default_server;
+        listen [::]:80 default_server;
+
+        root /var/www/html;
+
+        index index.php index.html index.htm;
+
+        server_name _;
+
+        location / {
+                resolver 10.96.0.10;
+                proxy_pass http://$host$uri?$query_string;
+                proxy_set_header Host $host;
+                proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+                proxy_set_header X-Real-IP $remote_addr;
+        }
+}
+```
  
- 
-### Содержание
+## Содержание
 
 + [Быстрый запуск](#Quickstart);
 + [Требования](#Req);
