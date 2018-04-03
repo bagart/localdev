@@ -34,6 +34,7 @@ chmod -R 777 /app/bootstrap/cache
 + [Установка](#Description);
     + [Технические особенности](#TechnicalDetails);
         + [Межсервисное взаимодействие](#TechnicalConnection);
+        + [Powered By](#TechnicalPoweredBy);
 + [Установка](#Install);
     + [Быстрый запуск](#Quickstart);
     + [Требования](#Req);
@@ -75,7 +76,8 @@ chmod -R 777 /app/bootstrap/cache
 - Minikube
 - Helm
 - Gitlab CiCd
-
+- OpenVPN
+- CoreDNS
 
 # <a name="Install"></a> Установка
 
