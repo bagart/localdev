@@ -1,11 +1,15 @@
 #! /bin/bash
 SERVICE_NAMESPACE="localdev"
-if [[ "$1" == "" ]]; then
-    kubectl get pods --all-namespaces | grep $SERVICE_NAMESPACE | grep -v redis | grep -v postgres
-    echo "use cmd/console.sh infra";
+SERVICE_NAME="$1"
+IGNORED_PODS_REGEXP='redis|postgres|beanstalkd|service-bus'
+
+if [[ "$SERVICE_NAME" == "" ]]; then
+    kubectl get pods --all-namespaces | grep $SERVICE_NAMESPACE | grep -vP $IGNORED_PODS_REGEXP
+    echo usage: 'cmd/console.sh ext-api'
 else
-	    #echo "kubectl get pods --all-namespaces | grep $SERVICE_NAMESPACE | grep $1 | grep -v redis | grep -v postgres | sed 's/^[^ ]\+ \+//' | sed 's/\s.*//'";
-    KUBE_NAME=`kubectl get pods --all-namespaces | grep $SERVICE_NAMESPACE | grep $1 | grep -v redis | grep -v postgres | sed 's/^[^ ]\+ \+//' | sed 's/\s.*//'`
+    KUBE_LINE=`kubectl get pods --all-namespaces | grep $SERVICE_NAMESPACE | grep $SERVICE_NAME | grep -vP $IGNORED_PODS_REGEXP`
+    #echo KUBE_LINE is $KUBE_LINE
+    KUBE_NAME=`echo $KUBE_LINE | sed 's/^[^ ]\+ \+//' | sed 's/\s.*//'`
 	echo connect to $KUBE_NAME
     kubectl -n $SERVICE_NAMESPACE exec -ti $KUBE_NAME -c phpfpm bash
 fi

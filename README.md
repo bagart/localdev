@@ -21,39 +21,65 @@ sudo ip r add 10.101.0.0/16 via $(minikube ip)
 
 sudo ip r add 10.96.0.10 via $(minikube ip)
 sudo ip r add 172.21.0.0/24 via $(minikube ip)
- ```
-### config for proxy-nginx
 ```
-server {
-        listen 80 default_server;
-        listen [::]:80 default_server;
-
-        root /var/www/html;
-
-        index index.php index.html index.htm;
-
-        server_name _;
-
-        location / {
-                resolver 10.96.0.10;
-                proxy_pass http://$host$uri?$query_string;
-                proxy_set_header Host $host;
-                proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-                proxy_set_header X-Real-IP $remote_addr;
-        }
-}
+права
 ```
+cmd/console.sh localdev
+chmod -R 777 /app/storage/
+chmod -R 777 /app/bootstrap/cache
+```
+
  
-## Содержание
+# Содержание
++ [Установка](#Description);
+    + [Технические особенности](#TechnicalDetails);
+        + [Межсервисное взаимодействие](#TechnicalConnection);
++ [Установка](#Install);
+    + [Быстрый запуск](#Quickstart);
+    + [Требования](#Req);
+    + [Переменные](#Vars);
+    + [Определние сервисов для развертывания](#Def_services);
+    + [Настройка openvpn-client](#OVPN);
+    + [Монтирование](#Mount);
++ [Использование](#Usage);
+    + [Подключение IDE](#UsageIDE);
+        + [Подключение Xdebug](#UsageIDEXdebug);
+        + [Подключение GIT](#UsageIDEGIT);
+    + [Подключение к php console](#UsageIDE);
+    + [Проксирование local dev env наружу](#UsageExternalProxy)
+    + [Пересобрать один сервис](#UsageRebuildService)
+    + [Проксирование local dev env наружу](#UsageExternalProxy);
 
-+ [Быстрый запуск](#Quickstart);
-+ [Требования](#Req);
-+ [Переменные](#Vars);
-+ [Определние сервисов для развертывания](#Def_services);
-+ [Настройка openvpn-client](#OVPN);
-+ [Монтирование](#Mount);
+# <a name="Description"></a> Описание
 
-### <a name="Quickstart"></a> Быстрый запуск
+**Localdev** - интегрированный в **Gitlab Ci/Cd** dev envirement
+
+Основная задача - локальная( разработка **SOA App**
+
+Особенности:   
+ 
+## <a name="TechnicalDetails"></a> Технические особенности
+
+### <a name="TechnicalConnection"></a> Межсервисное взаимодействие
+Работает по коротким именам
+ `http://ext-api/...` => `http://service-bus/...` => `http://internal-service/...` => `odbc://postgres`
+
+Если скомого http-сервиса нет срабатывает failover 
+ `http://ext-api/...` => `http://service-bus/...` =>
+  - => X `http://internal-service/...`
+  - => `http://internal-service.{LOCALDEV_FAILOVER_BRANCH}.{REMOTE_CLUSTER}/....` => openVPN => cloud env => `http://internal-service/...`
+
+### <a name="TechnicalPoweredBy"></a> Powered By
+- Docker 
+- Kubernetes
+- Minikube
+- Helm
+- Gitlab CiCd
+
+
+# <a name="Install"></a> Установка
+
+## <a name="Quickstart"></a> Быстрый запуск
 
 Тестирование проводилось на ОС Ubuntu 16.04.4 LTS (Xenial Xerus) 
 
@@ -68,8 +94,8 @@ $ cd localdev
 
 #### 3. Установить конфиг для linux или windows
 ```bash
-cp config.windows config
-#cp config.linux config
+#cp config.windows config
+cp config.linux config
 ```
 
 #### 4. Настроить конфиг
@@ -99,11 +125,11 @@ sudo ip r add 10.96.0.10 via $(minikube ip)
 
 На готовом кубернетес кластере можно отдельно запустить `install_service.sh`, в этом случае установка утилит будет пропущена, а развернутся только сервисы.
 
-### <a name="Req"></a> Требования
+## <a name="Req"></a> Требования
 
 Перед запуском скрипта необходимо установить гипервизор, если в качестве гипервизора используется kvm, то необходимо так же установить драйвера.
 
-### <a name="Vars"></a> Переменные
+## <a name="Vars"></a> Переменные
 
 В файле `config` необходимо определить переменные:
 
@@ -117,7 +143,7 @@ sudo ip r add 10.96.0.10 via $(minikube ip)
 | MINIKUBE_VERSION           | желаемая версия minikube               | Нет      | latest     |
 | MINIKUBE_VM_DRIVER         | драйвер для виртуальной машины         | Нет      | virtualbox |
 
-### <a name="Def_services"></a> Определние сервисов для развертывания
+## <a name="Def_services"></a> Определние сервисов для развертывания
 Для установки сервиса в локально развернутом кубернетесе, необходимо в директории `services` создать файл и определить в нем переменные:
 
 | Variable name | Description | Required | Example |
@@ -129,8 +155,50 @@ sudo ip r add 10.96.0.10 via $(minikube ip)
 | REMOTE_CLUSTER | Доменное имя, куда трафик должен быть перенаправлен | Нет | cluster.local |
 | LOCALDEV_FAILOVER_BRANCH | То же самое что и LOCALDEV_BRANCH, но используется на удаленном кластере | Если REMOTE_CLUSTER опеределен | master |
 
-### <a name="Mount"></a> Монтирование 
+## <a name="Mount"></a> Монтирование 
 
 При запуске `minikube` содержимое папки `~/.localdev/services/` автоматически будет смонтировано на `minikube` в директорию `/home/services/`. Необходимые файлы приложений можно редактировать в папке `~/.localdev/services/`.
 
+# <a name="Usage"></a> Использование
 
+## <a name="UsageIDE"></a> Подключение IDE
+
+WORK PATH: `~/.localdev/services/localdev/ext-api/`
+
+### <a name="UsageIDEXdebug"></a> Подключение xdebug
+
+### <a name="UsageIDEGIT"></a> Подключение GIT
+
+## <a name="UsageIDE"></a> Подключение к php console
+```bash
+#в директории с этим репозиторием
+cmd/console.sh
+    #localdev                  core-75cd69dd9c-pm6qz                      3/3       Running    0          4h
+    #localdev                  ext-api-695f4cbf4d-944kh                   3/3       Running    0          14h
+    #usage: cmd/console.sh ext-api
+
+cmd/console.sh api
+    #connect to ext-api-695f4cbf4d-944kh
+    #root@ext-api-695f4cbf4d-944kh:/#
+```
+
+
+## <a name="UsageRebuildService"></a> Пересобрать один сервис
+на примере service-bus
+```
+helm delete --purge service-bus-localdev && ./install_services.sh
+```
+
+
+## <a name="UsageExternalProxy"></a> Проксирование local dev env наружу
+```
+sudo cp addons/nginx-external-localdev-proxy.conf /etc/nginx/sites-enabled/localdev
+sudo chown root:root /etc/nginx/sites-enabled/localdev
+sudo chmod 0664 /etc/nginx/sites-enabled/localdev
+```
+
+# @todo
+- xdebug
+- .git
+- local/cloud db
+- hyper-v
