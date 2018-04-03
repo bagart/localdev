@@ -1,35 +1,6 @@
-# Документация
+# LocalDevEnv
+**Local Dev Env** with **Minikube** for **Gitlab Ci/Cd**
 
-mem
-```
-#force minikube remove
-sudo minikube delete; rm -rf ~/.minikube/ ~/.kube ~/.localdev ~/.helm
-echo nameserver 8.8.8.8 | sudo tee /etc/resolv.conf;echo nameserver 192.168.0.1 | sudo tee --append /etc/resolv.conf
-
-
-
-dns
-echo nameserver 10.96.0.10 | sudo tee /etc/resolv.conf;echo nameserver 8.8.8.8 | sudo tee --append /etc/resolv.conf
-
-dig ext-api @10.96.0.10
-curl http://ext-api.localdev.svc.dev.local/
-
-
-маршрут
-sudo ip r add 10.101.0.0/16 via $(minikube ip)
-
-
-sudo ip r add 10.96.0.10 via $(minikube ip)
-sudo ip r add 172.21.0.0/24 via $(minikube ip)
-```
-права
-```
-cmd/console.sh localdev
-chmod -R 777 /app/storage/
-chmod -R 777 /app/bootstrap/cache
-```
-
- 
 # Содержание
 + [Установка](#Description);
     + [Технические особенности](#TechnicalDetails);
@@ -42,6 +13,7 @@ chmod -R 777 /app/bootstrap/cache
     + [Определние сервисов для развертывания](#Def_services);
     + [Настройка openvpn-client](#OVPN);
     + [Монтирование](#Mount);
+    + [Проверки](#Checks);
 + [Использование](#Usage);
     + [Подключение IDE](#UsageIDE);
         + [Подключение Xdebug](#UsageIDEXdebug);
@@ -161,6 +133,13 @@ sudo ip r add 10.96.0.10 via $(minikube ip)
 
 При запуске `minikube` содержимое папки `~/.localdev/services/` автоматически будет смонтировано на `minikube` в директорию `/home/services/`. Необходимые файлы приложений можно редактировать в папке `~/.localdev/services/`.
 
+## <a name="Checks"></a> Проверки 
+
+```bash
+dig ext-api @10.96.0.10
+curl http://ext-api.localdev.svc.dev.local/
+```
+
 # <a name="Usage"></a> Использование
 
 ## <a name="UsageIDE"></a> Подключение IDE
@@ -191,7 +170,6 @@ cmd/console.sh api
 helm delete --purge service-bus-localdev && ./install_services.sh
 ```
 
-
 ## <a name="UsageExternalProxy"></a> Проксирование local dev env наружу
 ```
 sudo cp addons/nginx-external-localdev-proxy.conf /etc/nginx/sites-enabled/localdev
@@ -204,3 +182,13 @@ sudo chmod 0664 /etc/nginx/sites-enabled/localdev
 - .git
 - local/cloud db
 - hyper-v
+
+
+
+###### напоминалки
+маршрут
+```
+sudo ip r add 10.101.0.0/16 via $(minikube ip)
+sudo ip r add 10.96.0.10 via $(minikube ip)
+sudo ip r add 172.21.0.0/24 via $(minikube ip)
+```
