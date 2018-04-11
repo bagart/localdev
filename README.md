@@ -8,6 +8,7 @@
         + [Powered By](#TechnicalPoweredBy);
 + [Установка](#Install);
     + [Быстрый запуск](#Quickstart);
+    + [Повторный запуск](#SecondStart);    
     + [Требования](#Req);
     + [Переменные](#Vars);
     + [Определние сервисов для развертывания](#Def_services);
@@ -90,12 +91,7 @@ $ ./install.sh
 $ ./deploy.sh
 ```
 
-#### 9. прописать route о сетки minikube
-```sh
-sudo ip r add 10.96.0.10 via $(minikube ip)
-```
-
-
+## <a name="SecondStart"></a> Повторный запуск
 
 На готовом кубернетес кластере можно отдельно запустить `install_service.sh`, в этом случае установка утилит будет пропущена, а развернутся только сервисы.
 
