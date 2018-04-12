@@ -57,36 +57,60 @@
 ## <a name="Quickstart"></a> Быстрый запуск
 
 Тестирование проводилось на ОС Ubuntu 16.04.4 LTS (Xenial Xerus) 
+### 1. Установить driver виртуализации:
 
-#### 1. Cклонировать репозиторий:
-```sh
-$ git clone git@github.com:bagart/localdev.git
-```
-#### 2. Перейти в склонированную папку:
-```sh
-$ cd localdev
+#### Linux:
+
+https://github.com/kubernetes/minikube/blob/master/docs/drivers.md#kvm2-driver
+
+KVM2 for Ubuntu example
+
+```bash
+sudo apt install libvirt-bin qemu-kvm
+curl -LO https://storage.googleapis.com/minikube/releases/latest/docker-machine-driver-kvm2 && chmod +x docker-machine-driver-kvm2 && sudo mv docker-machine-driver-kvm2 /usr/local/bin/
+
+#check
+sudo kvm-ok
 ```
 
-#### 3. Установить конфиг для linux или windows
+#### Windows:
+
+Hyperv + Ubuntu-Server + minukube
+```
+Set-VMProcessor -VMName minikube-1804 -ExposeVirtualizationExtensions $true
+```
+
+Hyperv + minukube native - не работает
+https://docs.microsoft.com/ru-ru/virtualization/hyper-v-on-windows/quick-start/enable-hyper-v
+
+### 2. Cклонировать репозиторий:
+```sh
+git clone https://github.com/bagart/localdev.git
+cd localdev
+```
+
+### 3. Установить конфиг для linux или windows
 ```bash
 #cp config.windows config
 cp config.linux config
 ```
 
-#### 4. Настроить конфиг
+### 4. Настроить конфиг
 Указать пользователя гитлаб репозитория, почту, пароль и private docker registry server (см .[Переменные](#Vars)).
+```
+vim config
+```
+### 5. В файле `./services/ext-api` и отредактированть переменные (см. [Определние сервисов для развертывания](#Def_services)).
 
-#### 5. В файле `./services/ext-api` и отредактированть переменные (см. [Определние сервисов для развертывания](#Def_services)).
-
-#### 6. Положить в директорию `secrets` файл настрйоки vpn в облачную среду
+### 6. Положить в директорию `secrets` файл настрйоки vpn в облачную среду
 для openvpn-client `secrets/config.conf`:
 
-#### 7. Установка `minikube`, `kubectl`, `helm`
+### 7. Установка `minikube`, `kubectl`, `helm`
 ```sh
 $ ./install.sh
 ```
 
-#### 8. Поднять кубернетес кластер на миникубе + инициация helm
+### 8. Поднять кубернетес кластер на миникубе + инициация helm
 ```sh
 $ ./deploy.sh
 ```
